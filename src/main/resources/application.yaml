@@ -1,0 +1,25 @@
+ktor:
+  application:
+    modules:
+      - fr.wolfdev.app.ApplicationKt.module
+  deployment:
+    port: 8080
+    host: 0.0.0.0
+
+
+jwt:
+  secret: "${JWT_SECRET}"
+  issuer: "https://api.wolfdev.fr"
+  audience: "https://wolfdev.fr"
+  realm: "WolfBusiness"
+
+db:
+  driver: "org.postgresql.Driver"
+  jdbcUrl: "${DATABASE_URL}"
+  user: "${DATABASE_USER}"
+  password: "${DATABASE_PASSWORD}"
+  pool:
+    maxPoolSize: 10
+    connectionTimeout: 5000
+    idleTimeout: 60000
+    leakDetectionThreshold: 10000

@@ -1,0 +1,15 @@
+coverage:
+  status:
+    project:
+      default:
+        # Refuse le merge si la couverture globale baisse
+        target: auto
+        threshold: 0.0
+        if_not_found: success
+        informational: false
+    patch:
+      default:
+        # Refuse le merge si le code ajouté n'est pas couvert
+        target: 90%          # ou moins si trop strict
+        threshold: 1%        # tolère -1% de baisse dans le patch
+        informational: false

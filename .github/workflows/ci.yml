@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop, "feature/**", "release/**", "hotfix/**" ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    env:
+      BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+
+    services:
+      postgres:
+        image: postgres:17.5
+        ports: [ '5432:5432' ]
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: wolfconnect_test
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts', '**/gradle.properties') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x ./gradlew
+
+      - name: Run tests and coverage (feature/hotfix/develop)
+        if: startsWith(env.BRANCH_NAME, 'feature/') || startsWith(env.BRANCH_NAME, 'hotfix/') || startsWith(env.BRANCH_NAME, 'develop')
+        run: ./gradlew clean test koverXmlReport
+
+      - name: Run full build and coverage (main/release)
+        if: startsWith(env.BRANCH_NAME, 'main') || startsWith(env.BRANCH_NAME, 'release/')
+        run: ./gradlew clean test koverXmlReport
+
+      - name: Run Detekt
+        if: startsWith(env.BRANCH_NAME, 'main') || startsWith(env.BRANCH_NAME, 'develop') || startsWith(env.BRANCH_NAME, 'release/') || startsWith(env.BRANCH_NAME, 'hotfix/')
+        run: ./gradlew detekt
+
+      - name: Run Ktlint
+        if: startsWith(env.BRANCH_NAME, 'main') || startsWith(env.BRANCH_NAME, 'develop') || startsWith(env.BRANCH_NAME, 'release/') || startsWith(env.BRANCH_NAME, 'hotfix/')
+        run: ./gradlew ktlintCheck
+
+      - name: Upload test report
+        if: ${{ !(startsWith(env.BRANCH_NAME, 'feature/')) }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: build/reports/tests/test/index.html
+
+      - name: Upload Kover coverage report
+        if: startsWith(env.BRANCH_NAME, 'main') || startsWith(env.BRANCH_NAME, 'develop') || startsWith(env.BRANCH_NAME, 'release/') || startsWith(env.BRANCH_NAME, 'hotfix/')
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: build/reports/kover/xml/report.xml
+
+      - name: Upload coverage to Codecov
+        if: startsWith(env.BRANCH_NAME, 'main') || startsWith(env.BRANCH_NAME, 'develop') || startsWith(env.BRANCH_NAME, 'feature/')
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: build/reports/kover/xml/report.xml
+          fail_ci_if_error: true
+
+      - name: Build Docker image (release only)
+        if: startsWith(env.BRANCH_NAME, 'release/') || startsWith(env.BRANCH_NAME, 'main')
+        run: docker build -t wolfconnect:ci .
