@@ -52,7 +52,7 @@ jobs:
 
       - name: Run full build and coverage (main/release)
         if: startsWith(env.BRANCH_NAME, 'main') || startsWith(env.BRANCH_NAME, 'release/')
-        run: ./gradlew clean test koverXmlReport
+        run: ./gradlew clean build koverXmlReport
 
       - name: Run Detekt
         if: startsWith(env.BRANCH_NAME, 'main') || startsWith(env.BRANCH_NAME, 'develop') || startsWith(env.BRANCH_NAME, 'release/') || startsWith(env.BRANCH_NAME, 'hotfix/')
