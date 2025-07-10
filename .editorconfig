@@ -10,6 +10,10 @@ max_line_length = 120
 tab_width = 4
 trim_trailing_whitespace = true
 
-[{*.yml,*.yaml}]
+[*.{yml,yaml}]
 tab_width = 2
 indent_size = 2
+
+[*.{kt,kts}]
+# noinspection EditorConfigKeyCorrectness
+ktlint_standard_multiline-expression-wrapping = disabled
