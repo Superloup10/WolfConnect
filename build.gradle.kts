@@ -29,6 +29,8 @@ dependencies {
     runtimeOnly(libs.logback)
     runtimeOnly(libs.bundles.databases.runtime)
     testImplementation(libs.bundles.test)
+
+    detektPlugins(libs.detekt.formatting)
 }
 
 tasks.test {

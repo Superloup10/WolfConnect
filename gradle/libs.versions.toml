@@ -27,6 +27,8 @@ ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.
 
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+
 # DB
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
