@@ -45,6 +45,56 @@ git push origin feature/ma-super-fonctionnalite
 
 ---
 
+## 📝 Conventions de Commit
+
+Nous utilisons [Conventional Commits](https://www.conventionalcommits.org/) pour normaliser nos messages de commit.
+
+### Format
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+### Types de Commit
+
+| Type       | Description                                                      |
+|------------|------------------------------------------------------------------|
+| `feat`     | Nouvelle fonctionnalité                                          |
+| `fix`      | Correction de bug                                                |
+| `docs`     | Modification de la documentation                                 |
+| `style`    | Changements de formatage (espaces, points-virgules, etc.)        |
+| `refactor` | Refactoring du code                                              |
+| `perf`     | Améliorations de performance                                     |
+| `test`     | Ajout ou modification de tests                                   |
+| `build`    | Modifications du système de build ou des dépendances             |
+| `ci`       | Modifications de la configuration CI                             |
+| `chore`    | Autres changements qui ne modifient pas les fichiers src ou test |
+| `revert`   | Annulation d'un commit précédent                                 |
+
+
+### Exemples
+
+```
+feat(auth): ajouter l'authentification oauth2
+fix(api): corriger le statut http des réponses d'erreur
+docs(readme): mettre à jour les instructions d'installation
+test(api): ajouter des tests d'intégration pour l'authentification
+```
+
+### Validation Locale
+
+Les commits sont automatiquement vérifiés grâce à commitlint. Pour installer les outils :
+
+```bash
+npm install
+```
+
+---
+
 ## ✅ Critères de validation CI
 
 Avant d’être mergée, chaque PR doit :
