@@ -1,7 +1,7 @@
 # Dockerfile pour WolfConnect
 
 # Étape 1: Build de l'application Kotlin
-FROM gradle:8.14.2-jdk21 as builder
+FROM gradle:8.14.2-jdk21 AS builder
 
 WORKDIR /app
 
@@ -22,7 +22,7 @@ COPY . .
 RUN gradle installDist --no-daemon
 
 # Étape 2: Création de l'image exécutable minimale
-FROM eclipse-temurin:21-JRE
+FROM eclipse-temurin:21-jre
 
 ENV APP_HOME=/opt/wolfconnect
 WORKDIR $APP_HOME
