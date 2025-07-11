@@ -17,3 +17,5 @@ indent_size = 2
 [*.{kt,kts}]
 # noinspection EditorConfigKeyCorrectness
 ktlint_standard_multiline-expression-wrapping = disabled
+# noinspection EditorConfigKeyCorrectness
+ktlint_standard_class-signature = disabled
