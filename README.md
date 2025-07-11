@@ -46,6 +46,7 @@ DB_URL=jdbc:postgresql://localhost:5432/wolfconnect
 DB_USERNAME=postgres
 DB_PASSWORD=postgres
 JWT_SECRET=changeme
+PORT=8080
 ```
 
 ---
