@@ -14,6 +14,7 @@ object DatabaseFactory {
             password = config.property("db.password").getString()
 
             maximumPoolSize = config.property("db.maxPoolSize").getString().toInt()
+            minimumIdle = config.property("db.minimumIdle").getString().toInt()
             connectionTimeout = config.property("db.connectionTimeout").getString().toLong()
             idleTimeout = config.property("db.idleTimeout").getString().toLong()
             leakDetectionThreshold = config.property("db.leakDetectionThreshold").getString().toLong()
