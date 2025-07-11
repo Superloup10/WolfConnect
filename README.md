@@ -1,57 +1,106 @@
-# WolfBusiness
+# 🐺 WolfConnect
 
-This project was created using the [Ktor Project Generator](https://start.ktor.io).
+WolfConnect est une plateforme de communication professionnelle entre les employés, clients et la direction d’une entreprise.
 
-Here are some useful links to get you started:
+> Planifiez des créneaux, contactez la direction, déléguez aux bonnes personnes en cas d’indisponibilité.
+> Sécurisé, extensible, documenté et prêt pour la production.
 
-- [Ktor Documentation](https://ktor.io/docs/home.html)
-- [Ktor GitHub page](https://github.com/ktorio/ktor)
-- The [Ktor Slack chat](https://app.slack.com/client/T09229ZC6/C0A974TJ9). You'll need to [request an invitation](https://surveys.jetbrains.com/s3/kotlin-slack-sign-up) to join.
+![CI](https://github.com/superloup10/wolfconnect/actions/workflows/ci.yml/badge.svg)
+[![codecov](https://codecov.io/github/Superloup10/WolfConnect/graph/badge.svg?token=4Y3SCUV35N)](https://codecov.io/github/Superloup10/WolfConnect)
 
-## Features
+---
 
-Here's a list of features included in this project:
+## 🚀 Fonctionnalités
 
-| Name                                                                   | Description                                                                        |
-|------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| [Routing](https://start.ktor.io/p/routing)                             | Provides a structured routing DSL                                                  |
-| [OpenAPI](https://start.ktor.io/p/openapi)                             | Serves OpenAPI documentation                                                       |
-| [Swagger](https://start.ktor.io/p/swagger)                             | Serves Swagger UI for your project                                                 |
-| [CORS](https://start.ktor.io/p/cors)                                   | Enables Cross-Origin Resource Sharing (CORS)                                       |
-| [Content Negotiation](https://start.ktor.io/p/content-negotiation)     | Provides automatic content conversion according to Content-Type and Accept headers |
-| [kotlinx.serialization](https://start.ktor.io/p/kotlinx-serialization) | Handles JSON serialization using kotlinx.serialization library                     |
-| [Sessions](https://start.ktor.io/p/ktor-sessions)                      | Adds support for persistent sessions through cookies or headers                    |
-| [CSRF](https://start.ktor.io/p/csrf)                                   | Cross-site request forgery mitigation                                              |
-| [Authentication](https://start.ktor.io/p/auth)                         | Provides extension point for handling the Authorization header                     |
-| [Authentication OAuth](https://start.ktor.io/p/auth-oauth)             | Handles OAuth Bearer authentication scheme                                         |
-| [Authentication LDAP](https://start.ktor.io/p/auth-ldap)               | Handles Lightweight Directory Access Protocol (LDAP) authentication                |
-| [Authentication JWT](https://start.ktor.io/p/auth-jwt)                 | Handles JSON Web Token (JWT) bearer authentication scheme                          |
-| [Authentication Basic](https://start.ktor.io/p/auth-basic)             | Handles 'Basic' username / password authentication scheme                          |
-| [Request Validation](https://start.ktor.io/p/request-validation)       | Adds validation for incoming requests                                              |
-| [Status Pages](https://start.ktor.io/p/status-pages)                   | Provides exception handling for routes                                             |
-| [Call Logging](https://start.ktor.io/p/call-logging)                   | Logs client requests                                                               |
-| [Call ID](https://start.ktor.io/p/callid)                              | Allows to identify a request/call.                                                 |
-| [Postgres](https://start.ktor.io/p/postgres)                           | Adds Postgres database to your application                                         |
-| [Dependency Injection](https://start.ktor.io/p/ktor-di)                | Enables dependency injection for your server                                       |
+- 📅 Gestion des créneaux de disponibilité
+- 💬 Messagerie interne dirigée (CEO / secrétaire / autre)
+- 🛡️ Authentification sécurisée avec option d’anonymisation
+- 📚 API REST documentée avec OpenAPI
+- 🔍 Traçabilité et audit intégrés
 
-## Building & Running
+---
 
-To build or run the project, use one of the following tasks:
+## 🧱 Technologies
 
-| Task                          | Description                                                          |
-|-------------------------------|----------------------------------------------------------------------|
-| `./gradlew test`              | Run the tests                                                        |
-| `./gradlew build`             | Build everything                                                     |
-| `buildFatJar`                 | Build an executable JAR of the server with all dependencies included |
-| `buildImage`                  | Build the docker image to use with the fat JAR                       |
-| `publishImageToLocalRegistry` | Publish the docker image locally                                     |
-| `run`                         | Run the server                                                       |
-| `runDocker`                   | Run using the local docker image                                     |
+| Composant       | Stack                                        |
+|-----------------|----------------------------------------------|
+| Backend         | [Ktor 3.2.1](https://ktor.io) (Kotlin 2.2.0) |
+| Base de données | PostgreSQL via HikariCP                      |
+| CI/CD           | GitHub Actions + Codecov                     |
+| Docs API        | OpenAPI + Swagger UI                         |
+| Docs code       | Dokka                                        |
 
-If the server starts successfully, you'll see the following output:
+---
 
-```
-2024-12-04 14:32:45.584 [main] INFO  Application - Application started in 0.303 seconds.
-2024-12-04 14:32:45.682 [main] INFO  Application - Responding at http://0.0.0.0:8080
+## 🛠️ Prérequis
+
+- JDK 21
+- Docker & Docker Compose (optionnel)
+- PostgreSQL (local ou conteneur)
+- Fichier `.env` à la racine du projet
+
+### Variables requises dans `.env`
+
+```env
+DB_URL=jdbc:postgresql://localhost:5432/wolfconnect
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+JWT_SECRET=changeme
 ```
 
+---
+
+## 🧪 Lancer les tests
+
+```bash
+./gradlew test
+```
+
+Pour générer les rapports :
+
+```bash
+./gradlew koverXmlReport dokkaHtml openApiGenerate
+```
+
+Les rapports sont disponibles dans le dossier `build/`.
+
+---
+
+## 🐳 Docker
+
+```bash
+docker build -t wolfconnect .
+docker run -p 8080:8080 --env-file .env wolfconnect
+```
+
+---
+
+## 🔁 GitFlow
+
+- `main` : production
+- `develop` : pré-prod / intégration
+- `feature/*` : nouvelles fonctionnalités
+- `hotfix/*` : correctifs urgents
+- `release/*` : préparation de version
+
+---
+
+## 📚 Documentation
+
+- 📄 Documentation HTML (Dokka) : artefact CI
+- 📘 Spécification OpenAPI : artefact CI (`build/api-spec/openapi.yaml`)
+- 🔗 Swagger UI (local) : [http://localhost:8080/docs](http://localhost:8080/docs)
+
+---
+
+## 🙌 Contribuer
+
+Consultez le fichier [`CONTRIBUTING.md`](CONTRIBUTING.md) pour savoir comment contribuer efficacement au projet.
+
+---
+
+## 📜 Licence
+
+Ce projet est sous licence **EUPL v1.2**. Voir le fichier [`LICENSE`](LICENSE).
+
+> Voir également [`NOTICE.md`](NOTICE.md) pour les détails juridiques spécifiques au projet.
