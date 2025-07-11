@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.register
+
 plugins {
     alias(libs.plugins.kotlin)
     alias(libs.plugins.kotlin.serialization)
@@ -23,16 +25,6 @@ kotlin {
     }
 }
 
-dependencies {
-    implementation(libs.bundles.ktor)
-    implementation(libs.bundles.databases)
-    runtimeOnly(libs.logback)
-    runtimeOnly(libs.bundles.databases.runtime)
-    testImplementation(libs.bundles.test)
-
-    detektPlugins(libs.detekt.formatting)
-}
-
 tasks.test {
     useJUnitPlatform()
 }
@@ -48,4 +40,59 @@ ktlint {
         reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
         reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
     }
+}
+
+sourceSets {
+    create("integrationTest") {
+        kotlin {
+            compileClasspath += main.get().output + test.get().output
+            runtimeClasspath += main.get().output + test.get().output
+        }
+    }
+
+    create("performanceTest") {
+        kotlin {
+            compileClasspath += main.get().output + test.get().output
+            runtimeClasspath += main.get().output + test.get().output
+        }
+    }
+}
+
+configurations {
+    val integrationTestImplementation by getting {
+        extendsFrom(testImplementation.get())
+    }
+
+    val performanceTestImplementation by getting {
+        extendsFrom(testImplementation.get())
+    }
+}
+
+val integrationTest = tasks.register<Test>("integrationTest") {
+    description = "Runs integration tests."
+    group = "verification"
+    testClassesDirs = sourceSets["integrationTest"].output.classesDirs
+    classpath = sourceSets["integrationTest"].runtimeClasspath
+    useJUnitPlatform()
+    mustRunAfter(tasks.test)
+}
+
+val performanceTest = tasks.register<Test>("performanceTest") {
+    description = "Runs performance tests."
+    group = "verification"
+    testClassesDirs = sourceSets["performanceTest"].output.classesDirs
+    classpath = sourceSets["performanceTest"].runtimeClasspath
+    useJUnitPlatform()
+    mustRunAfter(integrationTest)
+}
+
+dependencies {
+    implementation(libs.bundles.ktor)
+    implementation(libs.bundles.databases)
+    runtimeOnly(libs.logback)
+    runtimeOnly(libs.bundles.databases.runtime)
+    testImplementation(libs.bundles.test)
+    "performanceTestImplementation"(libs.bundles.performance.test)
+    "integrationTestImplementation"(libs.bundles.test)
+    detektPlugins(libs.detekt.formatting)
 }

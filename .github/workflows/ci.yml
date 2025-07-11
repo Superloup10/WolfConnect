@@ -1,5 +1,12 @@
 name: CI
 
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  packages: write
+  deployments: write
+
 on:
   push:
     branches: [ main, develop, "feature/**", "release/**", "hotfix/**" ]
@@ -9,6 +16,9 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      NEW_VERSION: ${{ steps.semantic_release.outputs.new_release_version }}
 
     env:
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
@@ -29,6 +39,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Nécessaire pour sementic-release
 
       - name: Set Up JDK
         uses: actions/setup-java@v4
@@ -48,29 +60,50 @@ jobs:
 
       - name: Run tests and coverage (feature/hotfix/develop)
         if: startsWith(env.BRANCH_NAME, 'feature/') || startsWith(env.BRANCH_NAME, 'hotfix/') || startsWith(env.BRANCH_NAME, 'develop')
-        run: ./gradlew clean test koverXmlReport dokkaHtml
+        run: |
+          ./gradlew clean test koverXmlReport dokkaHtml \
+          -Dorg.gradle.parallel=true \
+          -Dorg.gradle.workers.max=4
 
       - name: Run full build and coverage (main/release)
         if: startsWith(env.BRANCH_NAME, 'main') || startsWith(env.BRANCH_NAME, 'release/')
-        run: ./gradlew clean build koverXmlReport dokkaHtml
+        run: |
+          ./gradlew clean build koverXmlReport dokkaHtml \
+          integrationTest performanceTest \
+          -Dorg.gradle.parallel=true \
+          -Dorg.gradle.workers.max=4
 
       - name: Validate OpenAPI spec
         run: npx @spotlight/spectral-cli lint build/api-spec/openapi.yaml || true
 
-      - name: Run Detekt
+      - name: Run Code Quality Checks
         if: startsWith(env.BRANCH_NAME, 'main') || startsWith(env.BRANCH_NAME, 'develop') || startsWith(env.BRANCH_NAME, 'release/') || startsWith(env.BRANCH_NAME, 'hotfix/')
-        run: ./gradlew detekt
+        run: ./gradlew detekt ktlintCheck -Dorg.gradle.parallel=true
 
-      - name: Run Ktlint
-        if: startsWith(env.BRANCH_NAME, 'main') || startsWith(env.BRANCH_NAME, 'develop') || startsWith(env.BRANCH_NAME, 'release/') || startsWith(env.BRANCH_NAME, 'hotfix/')
-        run: ./gradlew ktlintCheck
+      - name: Setup Node.js
+        if: startsWith(env.BRANCH_NAME, 'main') || startsWith(env.BRANCH_NAME, 'release/')
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Generate Version
+        if: startsWith(env.BRANCH_NAME, 'main') || startsWith(env.BRANCH_NAME, 'release/')
+        id: semantic_release
+        run: |
+          npm install -g semantic-release @semantic-release/git @semantic-release/github
+          echo "NEW_VERSION=$(semantic-release --dry-run | grep -oP 'The next release version is \K[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload test report
         if: ${{ !(startsWith(env.BRANCH_NAME, 'feature/')) }}
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: build/reports/tests/test/index.html
+          path: |
+            build/reports/tests/test/
+            build/reports/tests/integrationTest/
+            build/reports/tests/performanceTest/
 
       - name: Upload Kover coverage report
         if: startsWith(env.BRANCH_NAME, 'main') || startsWith(env.BRANCH_NAME, 'develop') || startsWith(env.BRANCH_NAME, 'release/') || startsWith(env.BRANCH_NAME, 'hotfix/')
@@ -97,10 +130,28 @@ jobs:
         if: startsWith(env.BRANCH_NAME, 'release/') || startsWith(env.BRANCH_NAME, 'main')
         run: docker build -t wolfconnect:ci .
 
+      - name: Scan Docker image
+        if: startsWith(env.BRANCH_NAME, 'release/') || startsWith(env.BRANCH_NAME, 'main')
+        uses: aquasecurity/trivy-action@0.32.0
+        with:
+          image-ref: wolfconnect:ci
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Pipeline Metrics
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { duration } = context.payload;
+            console.log(`Pipeline duration: ${duration}ms`);
+
   docker-publish:
     needs: build-test
     if: startsWith(github.head_ref || github.ref_name, 'main') || startsWith(github.head_ref || github.ref_name, 'release/')
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v4
@@ -117,10 +168,25 @@ jobs:
           username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # Récupérer la version depuis le job précédent
+      - name: Get version
+        id: get_version
+        run: |
+          VERSION="${{ needs.build-test.outputs.NEW_VERSION }}"
+          if [ -z "$VERSION" ]; then
+            VERSION="latest"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ vars.DOCKER_USERNAME }}/wolfconnect:latest
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ vars.DOCKER_USERNAME }}/wolfconnect:latest
+            ${{ vars.DOCKER_USERNAME }}/wolfconnect:${{ steps.get_version.outputs.VERSION }}
+          cache-from: type=registry,ref=${{ vars.DOCKER_USERNAME }}/wolfconnect:buildcache
+          cache-to: type=registry,ref=${{ vars.DOCKER_USERNAME }}/wolfconnect:buildcache,mode=max

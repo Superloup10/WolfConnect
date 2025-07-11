@@ -15,6 +15,7 @@ hikaricp = "6.2.1"
 kotest = "6.0.0.M4"
 faker = "2.0.0-rc.10"
 mockk = "1.14.4"
+coroutines = "1.10.2"
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
@@ -45,6 +46,7 @@ kotest = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 faker = { module = "io.github.serpro69:kotlin-faker", version.ref = "faker" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 
 [bundles]
 databases = [
@@ -77,6 +79,16 @@ test = [
     "kotest-assertions-core",
     "faker",
     "mockk"
+]
+
+performance-test = [
+    "kotlin-test-junit",
+    "ktor-server-test-host",
+    "kotest",
+    "kotest-assertions-core",
+    "faker",
+    "mockk",
+    "coroutines"
 ]
 
 [plugins]
