@@ -48,11 +48,11 @@ jobs:
 
       - name: Run tests and coverage (feature/hotfix/develop)
         if: startsWith(env.BRANCH_NAME, 'feature/') || startsWith(env.BRANCH_NAME, 'hotfix/') || startsWith(env.BRANCH_NAME, 'develop')
-        run: ./gradlew clean test koverXmlReport dokkaHtml openApiGenerate
+        run: ./gradlew clean test koverXmlReport dokkaHtml
 
       - name: Run full build and coverage (main/release)
         if: startsWith(env.BRANCH_NAME, 'main') || startsWith(env.BRANCH_NAME, 'release/')
-        run: ./gradlew clean build koverXmlReport dokkaHtml openApiGenerate
+        run: ./gradlew clean build koverXmlReport dokkaHtml
 
       - name: Validate OpenAPI spec
         run: npx @spotlight/spectral-cli lint build/api-spec/openapi.yaml || true
@@ -84,12 +84,6 @@ jobs:
         with:
           name: dokka-html
           path: build/dokka/html
-
-      - name: Upload OpenAPI documentation
-        uses: actions/upload-artifact@v4
-        with:
-          name: openapi-spec
-          path: build/api-spec
 
       - name: Upload coverage to Codecov
         if: startsWith(env.BRANCH_NAME, 'main') || startsWith(env.BRANCH_NAME, 'develop') || startsWith(env.BRANCH_NAME, 'feature/')
