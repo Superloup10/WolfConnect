@@ -99,7 +99,7 @@ jobs:
 
   docker-publish:
     needs: build-test
-    if: startsWith(env.BRANCH_NAME, 'main') || startsWith(env.BRANCH_NAME, 'release/')
+    if: startsWith(github.head_ref || github.ref_name, 'main') || startsWith(github.head_ref || github.ref_name, 'release/')
     runs-on: ubuntu-latest
 
     steps:
