@@ -46,7 +46,7 @@
       "labels": ["dependencies", "breaking"]
     }
   ],
-  "enabledManagers": ["gradle", "gradle-versions-catalog", "dockerfile", "npm"],
+  "enabledManagers": ["gradle", "dockerfile", "npm"],
   "rebaseWhen": "behind-base-branch",
   "separateMajorMinor": true,
   "separateMinorPatch": true,
