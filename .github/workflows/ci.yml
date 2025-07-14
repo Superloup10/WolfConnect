@@ -70,6 +70,8 @@ jobs:
           path: ~/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts', '**/gradle.properties') }}
           restore-keys: ${{ runner.os }}-gradle
+      - run: chmod +x ./gradlew
+
       - name: Validate Flyway Migrations
         run: ./gradlew flywayValidate -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=4
 
