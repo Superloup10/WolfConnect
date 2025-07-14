@@ -18,7 +18,8 @@
   "reviewers": ["@Superloup10"],
   "packageRules": [
     {
-      "matchManagers": ["gradle-versions-catalog"],
+      "matchManagers": ["gradle"],
+      "matchFileNames": ["gradle/libs.versions.toml"],
       "groupName": "📦 Kotlin/Gradle Dependencies"
     },
     {
