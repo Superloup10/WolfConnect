@@ -104,7 +104,7 @@ dependencies {
     detektPlugins(libs.detekt.formatting)
 }
 
-/*flyway {
+flyway {
     url = "jdbc:postgresql://localhost:5432/wolfconnect"
     user = "postgres"
     password = "postgres"
@@ -113,7 +113,7 @@ dependencies {
     mixed = true
     validateOnMigrate = true
     outOfOrder = false
-}*/
+}
 
 /*tasks.register<Test>("createTestDb") {
     doLast {
