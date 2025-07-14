@@ -60,7 +60,7 @@ PORT=8080
 Pour générer les rapports :
 
 ```bash
-./gradlew koverXmlReport dokkaHtml openApiGenerate
+./gradlew koverXmlReport dokkaHtml
 ```
 
 Les rapports sont disponibles dans le dossier `build/`.
