@@ -8,9 +8,10 @@ ktor = "3.2.1"
 logback = "1.5.18"
 # DB
 exposed = "1.0.0-beta-3"
-postgres = "42.7.7"
+postgres-r2dbc = "1.0.7.RELEASE"
+postgres-jdbc = "42.7.7"
 flyway = "11.10.1"
-hikaricp = "6.2.1"
+r2dbc-pool = "1.0.2.RELEASE"
 # Test
 kotest = "6.0.0.M4"
 faker = "2.0.0-rc.10"
@@ -34,10 +35,11 @@ detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", 
 
 # DB
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
-exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
-postgresql = { module = "org.postgresql:postgresql", version.ref = "postgres" }
+exposed-r2dbc = { module = "org.jetbrains.exposed:exposed-r2dbc", version.ref = "exposed" }
+postgresql-r2dbc = { module = "org.postgresql:r2dbc-postgresql", version.ref = "postgres-r2dbc" }
+postgresql-jdbc = { module = "org.postgresql:postgresql", version.ref = "postgres-jdbc" }
+r2dbc-pool = { module = "io.r2dbc:r2dbc-pool", version.ref = "r2dbc-pool" }
 flyway = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
-hikaricp = { module = "com.zaxxer:HikariCP", version.ref = "hikaricp" }
 
 #Test
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
@@ -51,13 +53,14 @@ coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version
 [bundles]
 databases = [
     "exposed-core",
-    "exposed-jdbc",
-    "flyway",
-    "hikaricp"
+    "exposed-r2dbc",
+    "r2dbc-pool",
+    "flyway"
 ]
 
 databases-runtime = [
-    "postgresql"
+    "postgresql-jdbc",
+    "postgresql-r2dbc"
 ]
 
 ktor = [
@@ -69,7 +72,8 @@ ktor = [
     "ktor-server-content-negotiation",
     "ktor-server-netty",
     "ktor-server-openapi",
-    "ktor-server-swagger"
+    "ktor-server-swagger",
+    "coroutines"
 ]
 
 test = [
@@ -87,8 +91,7 @@ performance-test = [
     "kotest",
     "kotest-assertions-core",
     "faker",
-    "mockk",
-    "coroutines"
+    "mockk"
 ]
 
 [plugins]

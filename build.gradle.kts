@@ -26,7 +26,14 @@ kotlin {
 }
 
 tasks.test {
+    /*dependsOn("createTestDb")
+    dependsOn("flywayMigrate")*/
+
     useJUnitPlatform()
+
+    /*flyway {
+        url = "jdbc:postgresql://localhost:5432/wolfconnect_test"
+    }*/
 }
 
 detekt {
@@ -96,3 +103,24 @@ dependencies {
     "integrationTestImplementation"(libs.bundles.test)
     detektPlugins(libs.detekt.formatting)
 }
+
+/*flyway {
+    url = "jdbc:postgresql://localhost:5432/wolfconnect"
+    user = "postgres"
+    password = "postgres"
+    baselineOnMigrate = true
+    locations = arrayOf("classpath:db/migration")
+    mixed = true
+    validateOnMigrate = true
+    outOfOrder = false
+}*/
+
+/*tasks.register<Test>("createTestDb") {
+    doLast {
+        exec {
+            "psql",
+            "-U", "postgres",
+            "-c", "CREATE DATABASE wolfconnect_test WITH TEMPLATE wolfconnect;"
+        }
+    }
+}*/
