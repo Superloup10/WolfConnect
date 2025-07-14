@@ -25,7 +25,7 @@ WolfConnect est une plateforme de communication professionnelle entre les employ
 | Composant       | Stack                                        |
 |-----------------|----------------------------------------------|
 | Backend         | [Ktor 3.2.1](https://ktor.io) (Kotlin 2.2.0) |
-| Base de données | PostgreSQL via HikariCP                      |
+| Base de données | PostgreSQL via R2DBC                         |
 | CI/CD           | GitHub Actions + Codecov                     |
 | Docs API        | OpenAPI + Swagger UI                         |
 | Docs code       | Dokka                                        |
@@ -42,7 +42,9 @@ WolfConnect est une plateforme de communication professionnelle entre les employ
 ### Variables requises dans `.env`
 
 ```env
-DB_URL=jdbc:postgresql://localhost:5432/wolfconnect
+DB_HOST=localhost
+DB_PORT=5432
+DB_DATABASE=wolfconnect
 DB_USERNAME=postgres
 DB_PASSWORD=postgres
 JWT_SECRET=changeme
@@ -61,6 +63,11 @@ Pour générer les rapports :
 
 ```bash
 ./gradlew koverXmlReport dokkaHtml
+```
+
+Pour exécuter les migrations :
+```bash
+./gradlew flywayMigrate
 ```
 
 Les rapports sont disponibles dans le dossier `build/`.

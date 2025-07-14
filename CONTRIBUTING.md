@@ -26,22 +26,27 @@ git checkout -b feature/ma-super-fonctionnalite
 ```
 
 4. Développez votre fonctionnalité 🛠️
-5. Vérifiez votre code :
+5. Appliquez les migrations si vous touchez à la base de données :
 ```bash
-./gradlew ktlintCheck detekt test koverXmlReport dokkaHtml openApiGenerate
+./gradlew flywayMigrate
 ```
 
-6. Commitez avec un message clair :
+6. Vérifiez votre code :
+```bash
+./gradlew ktlintCheck detekt test koverXmlReport dokkaHtml
+```
+
+7. Commitez avec un message clair :
 ```bash
 git commit -m "✨ feat: ajout de la prise de rendez-vous anonymisée"
 ```
 
-7. Poussez vos modifications :
+8. Poussez vos modifications :
 ```bash
 git push origin feature/ma-super-fonctionnalite
 ```
 
-8. Ouvrez une **Pull Request** vers `develop`
+9. Ouvrez une **Pull Request** vers `develop`
 
 ---
 
