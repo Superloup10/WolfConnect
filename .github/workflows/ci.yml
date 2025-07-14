@@ -40,10 +40,10 @@ jobs:
       - name: Validate PR commits
         run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
 
-  test:
+  database-migration:
     needs: setup
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
 
     services:
       postgres:
@@ -58,6 +58,34 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts', '**/gradle.properties') }}
+          restore-keys: ${{ runner.os }}-gradle
+      - name: Validate Flyway Migrations
+        run: ./gradlew flywayValidate -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=4
+
+      - name: Apply Flyway Migrations
+        run: |
+          ./gradlew flywayClean flywayMigrate \
+          -Dorg.gradle.parallel=true \
+          -Dorg.gradle.workers.max=4 \
+          -Dflyway.url=jdbc:postgresql://localhost:5432/wolfconnect_test \
+          -Dflyway.user=postgres \
+          -Dflyway.password=postgres
+
+  test:
+    needs: [ setup, database-migration ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
@@ -149,6 +177,7 @@ jobs:
           path: |
             build/dokka/html/
             build/api-spec/
+
 
   versioning:
     needs: [ setup, test ]
