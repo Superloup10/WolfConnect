@@ -21,28 +21,40 @@ object Users : Table("users") {
 }
 
 class UserRepositoryImpl : UserRepository {
-    override suspend fun save(user: User): User = dbQuery {
-        Users.insert {
-            it[id] = user.id
-            it[email] = user.email
-            it[passwordHash] = user.passwordHash
-            it[role] = user.role
+    override suspend fun save(user: User): User =
+        dbQuery {
+            Users.insert {
+                it[id] = user.id
+                it[email] = user.email
+                it[passwordHash] = user.passwordHash
+                it[role] = user.role
+            }
+            user
         }
-        user
-    }
 
-    override suspend fun findByEmail(email: String): User? = dbQuery {
-        Users.selectAll().where { Users.email eq email }.map(::resultRowToUser).singleOrNull()
-    }
+    override suspend fun findByEmail(email: String): User? =
+        dbQuery {
+            Users
+                .selectAll()
+                .where { Users.email eq email }
+                .map(::resultRowToUser)
+                .singleOrNull()
+        }
 
-    override suspend fun findById(id: UUID): User? = dbQuery {
-        Users.selectAll().where { Users.id eq id }.map(::resultRowToUser).singleOrNull()
-    }
+    override suspend fun findById(id: UUID): User? =
+        dbQuery {
+            Users
+                .selectAll()
+                .where { Users.id eq id }
+                .map(::resultRowToUser)
+                .singleOrNull()
+        }
 
-    private fun resultRowToUser(row: ResultRow) = User(
-        id = row[Users.id],
-        email = row[Users.email],
-        passwordHash = row[Users.passwordHash],
-        role = row[Users.role]
-    )
+    private fun resultRowToUser(row: ResultRow) =
+        User(
+            id = row[Users.id],
+            email = row[Users.email],
+            passwordHash = row[Users.passwordHash],
+            role = row[Users.role]
+        )
 }

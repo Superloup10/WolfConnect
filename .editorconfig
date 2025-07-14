@@ -19,3 +19,7 @@ indent_size = 2
 ktlint_standard_multiline-expression-wrapping = disabled
 # noinspection EditorConfigKeyCorrectness
 ktlint_standard_class-signature = disabled
+# noinspection EditorConfigKeyCorrectness
+ktlint_standard_trailing-comma-on-call-site = disabled
+# noinspection EditorConfigKeyCorrectness
+ktlint_standard_no-wildcard-imports = disabled

@@ -17,27 +17,29 @@ import java.time.Duration
 object DatabaseFactory {
     private fun createConnectionFactory(config: ApplicationConfig): ConnectionFactory {
         val connectionFactory = ConnectionFactories.get(
-            ConnectionFactoryOptions.builder()
+            ConnectionFactoryOptions
+                .builder()
                 .option(ConnectionFactoryOptions.DRIVER, "pool")
                 .option(ConnectionFactoryOptions.PROTOCOL, "postgresql")
                 .option(ConnectionFactoryOptions.HOST, config.property("db.host").getString())
                 .option(ConnectionFactoryOptions.PORT, config.property("db.port").getString().toInt())
                 .option(ConnectionFactoryOptions.DATABASE, config.property("db.database").getString())
                 .option(ConnectionFactoryOptions.USER, config.property("db.username").getString())
-                .option(ConnectionFactoryOptions.PASSWORD, config.property("db.password").getString()).build()
+                .option(ConnectionFactoryOptions.PASSWORD, config.property("db.password").getString())
+                .build()
         )
 
         return ConnectionPool(
-            ConnectionPoolConfiguration.builder(connectionFactory)
+            ConnectionPoolConfiguration
+                .builder(connectionFactory)
                 .maxIdleTime(Duration.ofMillis(config.property("db.pool.idleTimeout").getString().toLong()))
-                .maxSize(config.property("db.pool.maxSize").getString().toInt())
+                .maxSize(config.property("db.pool.maxPoolSize").getString().toInt())
                 .minIdle(config.property("db.pool.minimumIdle").getString().toInt())
                 .maxCreateConnectionTime(
                     Duration.ofMillis(
                         config.property("db.pool.connectionTimeout").getString().toLong()
                     )
-                )
-                .build()
+                ).build()
         )
     }
 
@@ -55,4 +57,5 @@ object DatabaseFactory {
 }
 
 const val MAX_ATTEMPTS = 3
+
 suspend fun <T> dbQuery(block: suspend () -> T): T = suspendTransaction(Dispatchers.IO) { block() }
