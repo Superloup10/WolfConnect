@@ -1,11 +1,10 @@
 ktor:
   application:
     modules:
-      - fr.wolfdev.app.ApplicationKt.module
+      - fr.wolfdev.domain.ApplicationKt.module
   deployment:
     port: "${PORT}"
     host: 0.0.0.0
-
 
 jwt:
   secret: "${JWT_SECRET}"
@@ -14,13 +13,13 @@ jwt:
   realm: "WolfConnect"
 
 db:
-  driver: "org.postgresql.Driver"
-  jdbcUrl: "${DB_URL}"
-  user: "${DB_USERNAME}"
+  host: "${DB_HOST}"
+  port: "${DB_PORT}"
+  database: "${DB_DATABASE}"
+  username: "${DB_USERNAME}"
   password: "${DB_PASSWORD}"
   pool:
     maxPoolSize: 10
     minimumIdle: 2
     connectionTimeout: 5000
     idleTimeout: 60000
-    leakDetectionThreshold: 10000
