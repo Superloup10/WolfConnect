@@ -1,0 +1,61 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "baseBranches": ["develop"],
+  "extends": [
+    "config:base"
+  ],
+  "minimumReleaseAge": "3 days",
+  "semanticCommits": "enabled",
+  "commitMessagePrefix": "chore(deps):",
+  "separateMultipleMajor": true,
+  "major": {
+    "dependencyDashboardApproval": true
+  },
+  "schedule": ["at 6:00am on monday"],
+  "timezone": "Europe/Paris",
+  "dependencyDashboard": true,
+  "labels": ["dependencies"],
+  "reviewers": ["@Superloup10"],
+  "packageRules": [
+    {
+      "matchManagers": ["gradle-versions-catalog"],
+      "groupName": "📦 Kotlin/Gradle Dependencies"
+    },
+    {
+      "matchManagers": ["gradle"],
+      "matchFileNames": ["gradle/wrapper/gradle-wrapper.properties", "settings.gradle.kts"],
+      "groupName": "🛠️ Gradle build system"
+    },
+    {
+      "matchManagers": ["dockerfile"],
+      "groupName": "🐳 Docker base images"
+    },
+    {
+      "matchManagers": ["npm"],
+      "matchFileNames": ["package.json"],
+      "groupName": "🌐 Node.js dependencies"
+    },
+    {
+      "matchUpdateTypes": ["patch", "pin", "digest"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "labels": ["dependencies", "breaking"]
+    }
+  ],
+  "enabledManagers": ["gradle", "gradle-versions-catalog", "dockerfile", "npm"],
+  "rebaseWhen": "behind-base-branch",
+  "separateMajorMinor": true,
+  "separateMinorPatch": true,
+  "prCreation": "immediate",
+  "vulnerabilityAlerts": {
+    "labels": ["security"],
+    "assignees": ["@Superloup10"],
+    "prPriority": 1
+  },
+  "rollbackPrs": true,
+  "assigneesFromCodeOwners": true,
+  "reviewersFromCodeOwners": true
+}
