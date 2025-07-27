@@ -50,6 +50,7 @@ jobs:
         image: postgres:17.5
         ports: [ '5432:5432' ]
         env:
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
           POSTGRES_DB: wolfconnect-dev
           DB_NAME_TEST: wolfconnect-test
@@ -89,6 +90,7 @@ jobs:
         env:
           DB_HOST: localhost
           DB_PORT: 5432
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
           POSTGRES_DB: wolfconnect-dev
           DB_MASTER_USERNAME: ${{ vars.DB_MASTER_USERNAME }}
@@ -102,6 +104,7 @@ jobs:
         env:
           DB_HOST: localhost
           DB_PORT: 5432
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
           DB_NAME_TEST: wolfconnect-test
           DB_MASTER_USERNAME: ${{ vars.DB_MASTER_USERNAME }}
