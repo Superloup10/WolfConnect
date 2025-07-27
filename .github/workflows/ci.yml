@@ -126,24 +126,31 @@ jobs:
           DB_MASTER_PASSWORD: ${{ secrets.DB_MASTER_PASSWORD }}
           DB_APP_USERNAME: ${{ vars.DB_APP_USERNAME }}
 
-
       - name: Validate Flyway Migrations
         run: |
           ./gradlew flywayValidate \
             -Dorg.gradle.parallel=true \
-            -Dorg.gradle.workers.max=4 \
-            -Dflyway.url=jdbc:postgresql://localhost:5432/wolfconnect-dev \
-            -Dflyway.user=${{ vars.DB_MASTER_USERNAME }} \
-            -Dflyway.password=${{ secrets.DB_MASTER_PASSWORD }}
+            -Dorg.gradle.workers.max=4
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: wolfconnect-dev
+          DB_MASTER_USERNAME: ${{ vars.DB_MASTER_USERNAME }}
+          DB_MASTER_PASSWORD: ${{ secrets.DB_MASTER_PASSWORD }}
+          DB_APP_USERNAME: ${{ vars.DB_APP_USERNAME }}
 
       - name: Apply Flyway Migrations
         run: |
           ./gradlew flywayClean flywayMigrate \
           -Dorg.gradle.parallel=true \
-          -Dorg.gradle.workers.max=4 \
-          -Dflyway.url=jdbc:postgresql://localhost:5432/wolfconnect-test \
-          -Dflyway.user=${{ vars.DB_MASTER_USERNAME }} \
-          -Dflyway.password=${{ secrets.DB_MASTER_PASSWORD }}
+          -Dorg.gradle.workers.max=4
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: wolfconnect-test
+          DB_MASTER_USERNAME: ${{ vars.DB_MASTER_USERNAME }}
+          DB_MASTER_PASSWORD: ${{ secrets.DB_MASTER_PASSWORD }}
+          DB_APP_USERNAME: ${{ vars.DB_APP_USERNAME }}
 
   test:
     needs: [ setup, database-migration ]

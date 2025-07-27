@@ -108,6 +108,13 @@ val sqlVars = mutableMapOf<Any, Any>(
 )
 
 flyway {
+    println("DEBUG FLYWAY CONFIG")
+    println("dbHost = $dbHost")
+    println("dbPort = $dbPort")
+    println("dbName = $dbName")
+    println("dbMasterUser = $dbMasterUser")
+    println("dbMasterPassword is set? [${dbMasterPassword?.length}]")
+    println("dbAppUser = $dbAppUser")
     url = "jdbc:postgresql://$dbHost:$dbPort/$dbName"
     user = dbMasterUser
     password = dbMasterPassword
