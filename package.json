@@ -9,8 +9,8 @@
   "scripts": {
     "prepare": "husky install",
     "generate:devcontainer:sh": ".devcontainer/generate-devcontainer.sh",
-    "lint-doc": "redoc-cli lint doc/api/openapi.yaml",
-    "bundle-doc": "redoc-cli bundle doc/api/openapi.yaml -o build/api-spec/openapi.yaml",
-    "generate-doc": "redoc-cli build-docs doc/api/openapi.yaml -o build/api-spec/index.html"
+    "lint-doc": "redocly lint doc/api/openapi.yaml",
+    "bundle-doc": "redocly bundle doc/api/openapi.yaml -o build/api-spec/openapi.yaml",
+    "generate-doc": "redocly build-docs doc/api/openapi.yaml -o build/api-spec/index.html"
   }
 }
