@@ -3,9 +3,14 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
+    "@redocly/cli": "^2.0.1",
     "husky": "^8.0.1"
   },
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "generate:devcontainer:sh": ".devcontainer/generate-devcontainer.sh",
+    "lint-doc": "redoc-cli lint doc/api/openapi.yaml",
+    "bundle-doc": "redoc-cli bundle doc/api/openapi.yaml -o build/api-spec/openapi.yaml",
+    "generate-doc": "redoc-cli build-docs doc/api/openapi.yaml -o build/api-spec/index.html"
   }
 }

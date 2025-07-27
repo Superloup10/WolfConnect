@@ -4,6 +4,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 .env
+.devcontainer/devcontainer.json
 
 ### STS ###
 .apt_generated

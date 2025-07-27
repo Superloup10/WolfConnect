@@ -1,0 +1,11 @@
+openapi: 3.1.0
+info:
+  title: WolfConnect API definition
+  description: WolfConnect API definition
+  version: 1.0.0
+servers:
+  - url: 'https://api.wolfdev.fr'
+    description: Production environment
+paths:
+
+
