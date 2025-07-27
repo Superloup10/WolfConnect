@@ -95,7 +95,7 @@ dependencies {
     detektPlugins(libs.detekt.formatting)
 }
 
-val dbName = System.getenv("DB_DATABASE")
+val dbName = System.getenv("DB_NAME")
 val dbHost = System.getenv("DB_HOST")
 val dbPort = System.getenv("DB_PORT")
 val dbMasterUser = System.getenv("DB_MASTER_USERNAME")
@@ -104,7 +104,7 @@ val dbAppUser = System.getenv("DB_APP_USERNAME")
 
 val sqlVars = mutableMapOf<Any, Any>(
     "var-master" to dbMasterUser,
-    "var_user" to dbAppUser
+    "var-user" to dbAppUser
 )
 
 flyway {

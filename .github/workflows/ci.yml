@@ -51,8 +51,8 @@ jobs:
         ports: [ '5432:5432' ]
         env:
           POSTGRES_PASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
-          POSTGRES_DB: wolfconnect_dev
-          DB_NAME_TEST: wolfconnect_test
+          POSTGRES_DB: wolfconnect-dev
+          DB_NAME_TEST: wolfconnect-test
           DB_MASTER_USERNAME: ${{ vars.DB_MASTER_USERNAME }}
           DB_MASTER_PASSWORD: ${{ secrets.DB_MASTER_PASSWORD }}
           DB_APP_USERNAME: ${{ vars.DB_APP_USERNAME }}
@@ -84,42 +84,34 @@ jobs:
           chmod +x ./init/common/init-users.sh
           chmod +x ./init/dev/init-multidb.sh
 
-      - name: Init utilisateurs sur wolfconnect_dev
+      - name: Init utilisateurs sur wolfconnect-dev
         run: bash ./init/common/init-users.sh
         env:
-          POSTGRES_USER: postgres
+          DB_HOST: localhost
+          DB_PORT: 5432
           POSTGRES_PASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
-          POSTGRES_DB: wolfconnect_dev
+          POSTGRES_DB: wolfconnect-dev
           DB_MASTER_USERNAME: ${{ vars.DB_MASTER_USERNAME }}
           DB_MASTER_PASSWORD: ${{ secrets.DB_MASTER_PASSWORD }}
           DB_APP_USERNAME: ${{ vars.DB_APP_USERNAME }}
           DB_APP_PASSWORD: ${{ secrets.DB_APP_PASSWORD }}
+          INIT_SQL_PATH: ./init/common/create_users.sql
 
-      - name: Init utilisateurs sur wolfconnect_test
-        run: bash ./init/common/init-users.sh
+      - name: Init utilisateurs sur wolfconnect-test
+        run: bash ./init/dev/init-multidb.sh
         env:
-          POSTGRES_USER: postgres
+          DB_HOST: localhost
+          DB_PORT: 5432
           POSTGRES_PASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
-          POSTGRES_DB: wolfconnect_test
+          DB_NAME_TEST: wolfconnect-test
           DB_MASTER_USERNAME: ${{ vars.DB_MASTER_USERNAME }}
-          DB_MASTER_PASSWORD: ${{ secrets.DB_MASTER_PASSWORD }}
-          DB_APP_USERNAME: ${{ vars.DB_APP_USERNAME }}
-          DB_APP_PASSWORD: ${{ secrets.DB_APP_PASSWORD }}
-
-      - name: Init multi-db pour test
-        run: |
-          DB_NAME_TEST=wolfconnect_test bash ./init/dev/init-multidb.sh
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
-          DB_MASTER_USERNAME: ${{ vars.DB_MASTER_USERNAME }}
-          DB_MASTER_PASSWORD: ${{ secrets.DB_MASTER_PASSWORD }}
+          INIT_SQL_PATH: ./init/common/create_users.sql
 
       - name: Validate Flyway Migrations
         run: ./gradlew flywayValidate \
           -Dorg.gradle.parallel=true \
           -Dorg.gradle.workers.max=4 \
-          -Dflyway.url=jdbc:postgresql://localhost:5432/wolfconnect_dev \
+          -Dflyway.url=jdbc:postgresql://localhost:5432/wolfconnect-dev \
           -Dflyway.user=${{ vars.DB_MASTER_USERNAME }} \
           -Dflyway.password=${{ secrets.DB_MASTER_PASSWORD }}
 
@@ -128,7 +120,7 @@ jobs:
           ./gradlew flywayClean flywayMigrate \
           -Dorg.gradle.parallel=true \
           -Dorg.gradle.workers.max=4 \
-          -Dflyway.url=jdbc:postgresql://localhost:5432/wolfconnect_test \
+          -Dflyway.url=jdbc:postgresql://localhost:5432/wolfconnect-test \
           -Dflyway.user=${{ vars.DB_MASTER_USERNAME }} \
           -Dflyway.password=${{ secrets.DB_MASTER_PASSWORD }}
 

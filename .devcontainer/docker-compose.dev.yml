@@ -6,7 +6,7 @@ services:
     container_name: wolfconnect-dev-app
     restart: unless-stopped
     env_file:
-      - ../.env
+      - .env
     ports:
       - "${APP_PORT:-8080}:8080"
     volumes:
@@ -21,7 +21,7 @@ services:
     container_name: wolfconnect-postgres
     restart: unless-stopped
     env_file:
-      - ../.env
+      - .env
     environment:
       POSTGRES_PASSWORD: ${DB_POSTGRES_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
