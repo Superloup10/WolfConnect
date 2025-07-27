@@ -212,13 +212,20 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install NPM dependencies
+        run: npm ci
+
       - run: chmod +x ./gradlew
 
       - name: Generate Dokka documentation
         run: ./gradlew dokkaHtml
 
       - name: Validate OpenAPI spec
-        run: npx @spotlight/spectral-cli lint build/api-spec/openapi.yaml || true
+        run: npm run lint-doc
 
       - name: Upload Documentation
         uses: actions/upload-artifact@v4
@@ -227,7 +234,6 @@ jobs:
           path: |
             build/dokka/html/
             build/api-spec/
-
 
   versioning:
     needs: [ setup, test ]
