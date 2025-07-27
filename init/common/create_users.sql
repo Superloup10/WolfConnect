@@ -1,0 +1,10 @@
+CREATE OR REPLACE FUNCTION create_user(username TEXT, passwd TEXT) RETURNS VOID AS
+$$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_user WHERE usename = username) THEN
+        EXECUTE format(
+            'CREATE USER %I WITH LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT NOREPLICATION PASSWORD %L', username,
+            passwd);
+    END IF;
+END;
+$$ LANGUAGE plpgsql;

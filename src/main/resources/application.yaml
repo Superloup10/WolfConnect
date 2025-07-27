@@ -3,7 +3,7 @@ ktor:
     modules:
       - fr.wolfdev.domain.ApplicationKt.module
   deployment:
-    port: "${PORT}"
+    port: "${APP_PORT}"
     host: 0.0.0.0
 
 jwt:
@@ -15,9 +15,9 @@ jwt:
 db:
   host: "${DB_HOST}"
   port: "${DB_PORT}"
-  database: "${DB_DATABASE}"
-  username: "${DB_USERNAME}"
-  password: "${DB_PASSWORD}"
+  database: "${DB_NAME}"
+  username: "${DB_APP_USERNAME}"
+  password: "${DB_APP_PASSWORD}"
   pool:
     maxPoolSize: 10
     minimumIdle: 2

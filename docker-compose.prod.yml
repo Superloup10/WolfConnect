@@ -6,13 +6,18 @@ services:
     container_name: wolfconnect-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: wolfconnect
+      POSTGRES_PASSWORD: ${DB_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      DB_MASTER_USERNAME: ${DB_MASTER_USERNAME}
+      DB_MASTER_PASSWORD: ${DB_MASTER_PASSWORD}
+      DB_APP_USERNAME: ${DB_APP_USERNAME}
+      DB_APP_PASSWORD: ${DB_APP_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
+      - ./init/common/create_users.sql:/docker-entrypoint-initdb.d/01_create_users.sql
+      - ./init/common/init-users.sh:/docker-entrypoint-initdb.d/02_init-users.sh
 
   wolfconnect:
     build:
@@ -20,8 +25,7 @@ services:
       dockerfile: Dockerfile
     container_name: wolfconnect-app
     restart: unless-stopped
-    env_file:
-      - .env
+    env_file: .env
     ports:
       - "8080:8080"
     depends_on:
