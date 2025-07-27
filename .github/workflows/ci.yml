@@ -110,6 +110,23 @@ jobs:
           PGPASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
           INIT_SQL_PATH: ./init/common/create_users.sql
 
+      - name: Vérification des variables pour Flyway
+        run: |
+          echo "DB_HOST=$DB_HOST"
+          echo "DB_PORT=$DB_PORT"
+          echo "DB_NAME=$DB_NAME"
+          echo "DB_MASTER_USERNAME=$DB_MASTER_USERNAME"
+          echo "DB_MASTER_PASSWORD is set? [${#DB_MASTER_PASSWORD}]"
+          echo "DB_APP_USERNAME=$DB_APP_USERNAME"
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: wolfconnect-dev
+          DB_MASTER_USERNAME: ${{ vars.DB_MASTER_USERNAME }}
+          DB_MASTER_PASSWORD: ${{ secrets.DB_MASTER_PASSWORD }}
+          DB_APP_USERNAME: ${{ vars.DB_APP_USERNAME }}
+
+
       - name: Validate Flyway Migrations
         run: |
           ./gradlew flywayValidate \
