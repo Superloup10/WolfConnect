@@ -52,6 +52,11 @@ jobs:
         env:
           POSTGRES_PASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
           POSTGRES_DB: wolfconnect_dev
+          DB_NAME_TEST: wolfconnect_test
+          DB_MASTER_USERNAME: ${{ vars.DB_MASTER_USERNAME }}
+          DB_MASTER_PASSWORD: ${{ secrets.DB_MASTER_PASSWORD }}
+          DB_APP_USERNAME: ${{ vars.DB_APP_USERNAME }}
+          DB_APP_PASSWORD: ${{ secrets.DB_APP_PASSWORD }}
         options: >-
           --health-cmd="pg_isready -U postgres"
           --health-interval=10s
@@ -74,13 +79,13 @@ jobs:
       - name: Ensure psql is installed
         run: sudo apt update && sudo apt install -y postgresql-client
 
-      - name: Create the test database
-        run: psql -h localhost -p 5432 -U postgres -c 'CREATE DATABASE wolfconnect_test;'
-        env:
-          PGPASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
+      - name: Rendre les scripts shell exécutables
+        run: |
+          chmod +x ./init/common/init-users.sh
+          chmod +x ./init/dev/init-multidb.sh
 
-      - name: Run init-users.sh on dev DB
-        run: bash ./init-users.sh
+      - name: Init utilisateurs sur wolfconnect_dev
+        run: bash ./init/common/init-users.sh
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
@@ -90,8 +95,8 @@ jobs:
           DB_APP_USERNAME: ${{ vars.DB_APP_USERNAME }}
           DB_APP_PASSWORD: ${{ secrets.DB_APP_PASSWORD }}
 
-      - name: Run init-users.sh on test DB
-        run: bash ./init-users.sh
+      - name: Init utilisateurs sur wolfconnect_test
+        run: bash ./init/common/init-users.sh
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
@@ -100,6 +105,15 @@ jobs:
           DB_MASTER_PASSWORD: ${{ secrets.DB_MASTER_PASSWORD }}
           DB_APP_USERNAME: ${{ vars.DB_APP_USERNAME }}
           DB_APP_PASSWORD: ${{ secrets.DB_APP_PASSWORD }}
+
+      - name: Init multi-db pour test
+        run: |
+          DB_NAME_TEST=wolfconnect_test bash ./init/dev/init-multidb.sh
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
+          DB_MASTER_USERNAME: ${{ vars.DB_MASTER_USERNAME }}
+          DB_MASTER_PASSWORD: ${{ secrets.DB_MASTER_PASSWORD }}
 
       - name: Validate Flyway Migrations
         run: ./gradlew flywayValidate \
