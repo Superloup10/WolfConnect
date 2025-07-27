@@ -111,12 +111,13 @@ jobs:
           INIT_SQL_PATH: ./init/common/create_users.sql
 
       - name: Validate Flyway Migrations
-        run: ./gradlew flywayValidate \
-          -Dorg.gradle.parallel=true \
-          -Dorg.gradle.workers.max=4 \
-          -Dflyway.url=jdbc:postgresql://localhost:5432/wolfconnect-dev \
-          -Dflyway.user=${{ vars.DB_MASTER_USERNAME }} \
-          -Dflyway.password=${{ secrets.DB_MASTER_PASSWORD }}
+        run: |
+          ./gradlew flywayValidate \
+            -Dorg.gradle.parallel=true \
+            -Dorg.gradle.workers.max=4 \
+            -Dflyway.url=jdbc:postgresql://localhost:5432/wolfconnect-dev \
+            -Dflyway.user=${{ vars.DB_MASTER_USERNAME }} \
+            -Dflyway.password=${{ secrets.DB_MASTER_PASSWORD }}
 
       - name: Apply Flyway Migrations
         run: |
