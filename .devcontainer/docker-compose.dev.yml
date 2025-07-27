@@ -1,0 +1,42 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wolfconnect-dev-app
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    volumes:
+      - ../:/workspace/WolfConnect
+    working_dir: /workspace/WolfConnect
+    depends_on:
+      - postgres
+    command: sleep infinity
+
+  postgres:
+    image: postgres:17.5-bookworm
+    container_name: wolfconnect-postgres
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    environment:
+      POSTGRES_PASSWORD: ${DB_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      DB_NAME_TEST: ${DB_NAME_TEST}
+      DB_MASTER_USERNAME: ${DB_MASTER_USERNAME}
+      DB_MASTER_PASSWORD: ${DB_MASTER_PASSWORD}
+      DB_APP_USERNAME: ${DB_APP_USERNAME}
+      DB_APP_PASSWORD: ${DB_APP_PASSWORD}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgresql:/var/lib/postgresql/data
+      - ../init/common/create_users.sql:/docker-entrypoint-initdb.d/01_create_users.sql
+      - ../init/common/init-users.sh:/docker-entrypoint-initdb.d/02_init-users.sh
+      - ../init/dev/init-multidb.sh:/docker-entrypoint-initdb.d/03_init-multidb.sh
+
+volumes:
+  postgresql:

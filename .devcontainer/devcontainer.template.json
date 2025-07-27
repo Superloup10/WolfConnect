@@ -1,0 +1,37 @@
+{
+  "name": "WolfConnect",
+  "dockerComposeFile": "docker-compose.dev.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace/WolfConnect",
+  "forwardPorts": [
+    "{{APP_PORT}}",
+    "{{DB_PORT}}"
+  ],
+  "containerEnv": {
+    "APPLY_FLYWAY_MIGRATIONS": "1"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21",
+      "installGradle": "true",
+      "gradleVersion": "8.14.3",
+      "jdkDistro": "tem"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-gradle",
+        "fwcd.kotlin",
+        "eamodio.gitlens"
+      ]
+    },
+    "jetbrains": {
+      "backend": "IntelliJ"
+    }
+  },
+  "postCreateCommand": "chmod +x .devcontainer/init-devcontainer.sh && .devcontainer/init-devcontainer.sh"
+}

@@ -1,9 +1,10 @@
 # 🐺 WolfConnect
 
-WolfConnect est une plateforme de communication professionnelle entre les employés, clients et la direction d’une entreprise.
+WolfConnect est une plateforme de communication professionnelle entre les employés, clients et la direction d’une
+entreprise.
 
 > Planifiez des créneaux, contactez la direction, déléguez aux bonnes personnes en cas d’indisponibilité.
-> Sécurisé, extensible, documenté et prêt pour la production.
+> Sécurisé, extensible, documenté et prêt pour la production ou le cloud.
 
 ![CI](https://github.com/superloup10/wolfconnect/actions/workflows/ci.yml/badge.svg)
 [![codecov](https://codecov.io/github/Superloup10/WolfConnect/graph/badge.svg?token=4Y3SCUV35N)](https://codecov.io/github/Superloup10/WolfConnect)
@@ -17,26 +18,26 @@ WolfConnect est une plateforme de communication professionnelle entre les employ
 - 🛡️ Authentification sécurisée avec option d’anonymisation
 - 📚 API REST documentée avec OpenAPI
 - 🔍 Traçabilité et audit intégrés
+- ⚙️ Stack reproductible (Devcontainer, Docker)
 
 ---
 
 ## 🧱 Technologies
 
-| Composant       | Stack                                        |
-|-----------------|----------------------------------------------|
-| Backend         | [Ktor 3.2.1](https://ktor.io) (Kotlin 2.2.0) |
-| Base de données | PostgreSQL via R2DBC                         |
-| CI/CD           | GitHub Actions + Codecov                     |
-| Docs API        | OpenAPI + Swagger UI                         |
-| Docs code       | Dokka                                        |
+| Composant         | Stack                                        |
+|-------------------|----------------------------------------------|
+| Backend           | [Ktor 3.2.1](https://ktor.io) (Kotlin 2.2.0) |
+| Base de données   | PostgreSQL via R2DBC                         |
+| CI/CD             | GitHub Actions, Codecov                      |
+| Documentation API | Dockka, OpenAPI, Swagger UI                  |
 
 ---
 
 ## 🛠️ Prérequis
 
 - JDK 21
-- Docker & Docker Compose (optionnel)
-- PostgreSQL (local ou conteneur)
+- Docker & Docker Compose
+- PostgreSQL (local ou conteneurisé)
 - Fichier `.env` à la racine du projet
 
 ### Variables requises dans `.env`
@@ -44,52 +45,95 @@ WolfConnect est une plateforme de communication professionnelle entre les employ
 ```env
 DB_HOST=localhost
 DB_PORT=5432
-DB_DATABASE=wolfconnect
-DB_USERNAME=postgres
-DB_PASSWORD=postgres
+DB_NAME=wolfconnect-dev
+DB_NAME_TEST=wolfconnect-test
+DB_POSTGRES_PASSWORD=postgres
+DB_MASTER_USERNAME=master
+DB_MASTER_PASSWORD=master
+DB_APP_USERNAME=app
+DB_APP_PASSWORD=app
 JWT_SECRET=changeme
-PORT=8080
+APP_PORT=8080
 ```
 
 ---
 
-## 🧪 Lancer les tests
+## ⚡ Lancement rapide
+
+### Avec Devcontainer (recommandé)
+
+1. Installez Docker Desktop
+2. Ouvrez le projet avec :
+    - VS Code + extension Dev Containers
+    - ou JetBrains Gateway
+3. Cliquez sur “Ouvrir dans Dev Container”
+
+Cela configure automatiquement :
+
+- `.env` dans `.devcontainer/`
+- Dépendances Node
+- Hooks Git (Husky)
+- Base PostgreSQL et config Kotlin/Gradle
+
+### Sans Devcontainer
+
+1. Copier `.env.example` → `.env` à la racine
+2. Compléter les valeurs manquantes
+3. Démarrer via :
+
+```bash
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+---
+
+## 🐳 Docker & Docker Compose
+
+- `.devcontainer/docker-compose.dev.yml` → utilisé automatiquement en Devcontainer
+- `docker-compose.prod.yml` → utilisé pour des démos, des tests ou un déploiement
+
+---
+
+## 🔬 Tests, analyse et documentation
+
+- **Tests unitaires / intégration :**
 
 ```bash
 ./gradlew test
 ```
 
-Pour générer les rapports :
+- **Lint / Analyse statique :**
+
+```bash
+./gradlew ktlintCheck detekt
+```
+
+- **Migration BDD :**
+
+```bash
+./gradlew flywayMigrate
+```
+
+- **Génération de couverture et documentation :**
 
 ```bash
 ./gradlew koverXmlReport dokkaHtml
 ```
 
-Pour exécuter les migrations :
-```bash
-./gradlew flywayMigrate
-```
-
-Les rapports sont disponibles dans le dossier `build/`.
-
----
-
-## 🐳 Docker
-
-```bash
-docker build -t wolfconnect .
-docker run -p 8080:8080 --env-file .env wolfconnect
-```
+Le rapport de couverture Kover est dans `build/reports/kover/`.
+La documentation HTML générée par Dokka est dans `build/dokka/html/`.
 
 ---
 
 ## 🔁 GitFlow
 
-- `main` : production
-- `develop` : pré-prod / intégration
-- `feature/*` : nouvelles fonctionnalités
-- `hotfix/*` : correctifs urgents
-- `release/*` : préparation de version
+| Branche     | Usage                         |
+|-------------|-------------------------------|
+| `main`      | Production                    |
+| `develop`   | Intégration / Préproduction   |
+| `feature/*` | Nouvelles fonctionnalités     |
+| `hotfix/*`  | Correctifs urgents            |
+| `release/*` | Préparation de version stable |
 
 ---
 
@@ -97,18 +141,17 @@ docker run -p 8080:8080 --env-file .env wolfconnect
 
 - 📄 Documentation HTML (Dokka) : artefact CI
 - 📘 Spécification OpenAPI : artefact CI (`build/api-spec/openapi.yaml`)
-- 🔗 Swagger UI (local) : [http://localhost:8080/docs](http://localhost:8080/docs)
+- 🔗 Swagger UI (local) : http://localhost:8080/docs
 
 ---
 
 ## 🙌 Contribuer
 
-Consultez le fichier [`CONTRIBUTING.md`](CONTRIBUTING.md) pour savoir comment contribuer efficacement au projet.
+Consultez [`CONTRIBUTING.md`](CONTRIBUTING.md) pour connaître les bonnes pratiques de contribution.
 
 ---
 
 ## 📜 Licence
 
-Ce projet est sous licence **EUPL v1.2**. Voir le fichier [`LICENSE`](LICENSE).
-
-> Voir également [`NOTICE.md`](NOTICE.md) pour les détails juridiques spécifiques au projet.
+Ce projet est distribué sous licence **EUPL v1.2**.
+Voir aussi [`NOTICE.md`](NOTICE.md) pour les obligations spécifiques.

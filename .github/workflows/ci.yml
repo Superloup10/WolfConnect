@@ -50,9 +50,8 @@ jobs:
         image: postgres:17.5
         ports: [ '5432:5432' ]
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: wolfconnect_test
+          POSTGRES_PASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
+          POSTGRES_DB: wolfconnect_dev
         options: >-
           --health-cmd="pg_isready -U postgres"
           --health-interval=10s
@@ -72,8 +71,43 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
       - run: chmod +x ./gradlew
 
+      - name: Ensure psql is installed
+        run: sudo apt update && sudo apt install -y postgresql-client
+
+      - name: Create the test database
+        run: psql -h localhost -p 5432 -U postgres -c 'CREATE DATABASE wolfconnect_test;'
+        env:
+          PGPASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
+
+      - name: Run init-users.sh on dev DB
+        run: bash ./init-users.sh
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
+          POSTGRES_DB: wolfconnect_dev
+          DB_MASTER_USERNAME: ${{ vars.DB_MASTER_USERNAME }}
+          DB_MASTER_PASSWORD: ${{ secrets.DB_MASTER_PASSWORD }}
+          DB_APP_USERNAME: ${{ vars.DB_APP_USERNAME }}
+          DB_APP_PASSWORD: ${{ secrets.DB_APP_PASSWORD }}
+
+      - name: Run init-users.sh on test DB
+        run: bash ./init-users.sh
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ secrets.DB_POSTGRES_PASSWORD }}
+          POSTGRES_DB: wolfconnect_test
+          DB_MASTER_USERNAME: ${{ vars.DB_MASTER_USERNAME }}
+          DB_MASTER_PASSWORD: ${{ secrets.DB_MASTER_PASSWORD }}
+          DB_APP_USERNAME: ${{ vars.DB_APP_USERNAME }}
+          DB_APP_PASSWORD: ${{ secrets.DB_APP_PASSWORD }}
+
       - name: Validate Flyway Migrations
-        run: ./gradlew flywayValidate -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=4
+        run: ./gradlew flywayValidate \
+          -Dorg.gradle.parallel=true \
+          -Dorg.gradle.workers.max=4 \
+          -Dflyway.url=jdbc:postgresql://localhost:5432/wolfconnect_dev \
+          -Dflyway.user=${{ vars.DB_MASTER_USERNAME }} \
+          -Dflyway.password=${{ secrets.DB_MASTER_PASSWORD }}
 
       - name: Apply Flyway Migrations
         run: |
@@ -81,8 +115,8 @@ jobs:
           -Dorg.gradle.parallel=true \
           -Dorg.gradle.workers.max=4 \
           -Dflyway.url=jdbc:postgresql://localhost:5432/wolfconnect_test \
-          -Dflyway.user=postgres \
-          -Dflyway.password=postgres
+          -Dflyway.user=${{ vars.DB_MASTER_USERNAME }} \
+          -Dflyway.password=${{ secrets.DB_MASTER_PASSWORD }}
 
   test:
     needs: [ setup, database-migration ]

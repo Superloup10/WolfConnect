@@ -10,7 +10,7 @@ logback = "1.5.18"
 exposed = "1.0.0-beta-3"
 postgres-r2dbc = "1.0.7.RELEASE"
 postgres-jdbc = "42.7.7"
-flyway = "11.10.1"
+flyway = "11.10.2"
 r2dbc-pool = "1.0.2.RELEASE"
 # Test
 kotest = "6.0.0.M4"
@@ -40,6 +40,7 @@ postgresql-r2dbc = { module = "org.postgresql:r2dbc-postgresql", version.ref = "
 postgresql-jdbc = { module = "org.postgresql:postgresql", version.ref = "postgres-jdbc" }
 r2dbc-pool = { module = "io.r2dbc:r2dbc-pool", version.ref = "r2dbc-pool" }
 flyway = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
+flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 
 #Test
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
@@ -55,7 +56,8 @@ databases = [
     "exposed-core",
     "exposed-r2dbc",
     "r2dbc-pool",
-    "flyway"
+    "flyway",
+    "flyway-postgresql"
 ]
 
 databases-runtime = [

@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.register
-
 plugins {
     alias(libs.plugins.kotlin)
     alias(libs.plugins.kotlin.serialization)
@@ -26,14 +24,7 @@ kotlin {
 }
 
 tasks.test {
-    /*dependsOn("createTestDb")
-    dependsOn("flywayMigrate")*/
-
     useJUnitPlatform()
-
-    /*flyway {
-        url = "jdbc:postgresql://localhost:5432/wolfconnect_test"
-    }*/
 }
 
 detekt {
@@ -104,23 +95,27 @@ dependencies {
     detektPlugins(libs.detekt.formatting)
 }
 
+val dbName = System.getenv("DB_DATABASE")
+val dbHost = System.getenv("DB_HOST")
+val dbPort = System.getenv("DB_PORT")
+val dbMasterUser = System.getenv("DB_MASTER_USERNAME")
+val dbMasterPassword = System.getenv("DB_MASTER_PASSWORD")
+val dbAppUser = System.getenv("DB_APP_USERNAME")
+
+val sqlVars = mutableMapOf<Any, Any>(
+    "var-master" to dbMasterUser,
+    "var_user" to dbAppUser
+)
+
 flyway {
-    url = "jdbc:postgresql://localhost:5432/wolfconnect"
-    user = "postgres"
-    password = "postgres"
+    url = "jdbc:postgresql://$dbHost:$dbPort/$dbName"
+    user = dbMasterUser
+    password = dbMasterPassword
     baselineOnMigrate = true
     locations = arrayOf("classpath:db/migration")
+    placeholders = sqlVars
+    placeholderReplacement = true
     mixed = true
     validateOnMigrate = true
     outOfOrder = false
 }
-
-/*tasks.register<Test>("createTestDb") {
-    doLast {
-        exec {
-            "psql",
-            "-U", "postgres",
-            "-c", "CREATE DATABASE wolfconnect_test WITH TEMPLATE wolfconnect;"
-        }
-    }
-}*/
