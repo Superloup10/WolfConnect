@@ -4,8 +4,8 @@ set -e
 
 CREATE_USERS_SQL=${INIT_SQL_PATH:-/docker-entrypoint-initdb.d/01_create_users.sql}
 
-PG_HOST="${INIT_DB_HOST:-${DB_HOST_EXT:-${DB_HOST:-localhost}}}"
-PG_PORT="${INIT_DB_PORT:-${DB_PORT_EXT:-${DB_PORT:-5432}}}"
+PG_HOST="${INIT_DB_HOST:-localhost}"
+PG_PORT="${INIT_DB_PORT:-5432}"
 
 if ! psql -h "$PG_HOST" -p "$PG_PORT" -U "$POSTGRES_USER" -lqt | cut -d \| -f 1 | grep -qw "$DB_NAME_TEST"; then
     psql -h "$PG_HOST" -p "$PG_PORT" -v ON_ERROR_STOP=1 \
