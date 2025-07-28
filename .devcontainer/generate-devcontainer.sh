@@ -19,8 +19,8 @@ if [ ! -f "$ENV_FILE" ]; then
 fi
 
 # Récupération des port et host externe
-APP_PORT_EXT=$(grep -E '^APP_PORT_EXT=' "$ENV_FILE" | cut -d '=' -f2- | xargs || echo "8080")
-DB_PORT_EXT=$(grep -E '^DB_PORT_EXT=' "$ENV_FILE" | cut -d '=' -f2- | xargs || echo "5432")
+APP_PORT_EXT=$(grep -E '^APP_PORT_EXT=' "$ENV_FILE" | cut -d '=' -f2- | cut -d '#' -f1 | xargs || echo "8080")
+DB_PORT_EXT=$(grep -E '^DB_PORT_EXT=' "$ENV_FILE" | cut -d '=' -f2- | cut -d '#' -f1 | xargs || echo "5432")
 
 # Génération du devcontainer.json
 sed \
