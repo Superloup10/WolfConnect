@@ -4,8 +4,8 @@
   "service": "app",
   "workspaceFolder": "/workspace/WolfConnect",
   "forwardPorts": [
-    "{{APP_PORT}}",
-    "{{DB_PORT}}"
+    "{{APP_PORT_EXT}}",
+    "{{DB_PORT_EXT}}"
   ],
   "containerEnv": {
     "APPLY_FLYWAY_MIGRATIONS": "1"

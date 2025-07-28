@@ -32,8 +32,16 @@
       "groupName": "🐳 Docker base images"
     },
     {
+      "matchManagers": ["docker-compose"],
+      "groupName": "🐳 Docker Compose images"
+    },
+    {
+      "matchManagers": ["devcontainer"],
+      "matchFileNames": [".devcontainer/devcontainer.template.json"],
+      "groupName": "🛠️ Devcontainer Features/Tools"
+    },
+    {
       "matchManagers": ["npm"],
-      "matchFileNames": ["package.json"],
       "groupName": "🌐 Node.js dependencies"
     },
     {
@@ -46,7 +54,7 @@
       "labels": ["dependencies", "breaking"]
     }
   ],
-  "enabledManagers": ["gradle", "dockerfile", "npm"],
+  "enabledManagers": ["gradle", "dockerfile", "docker-compose", "devcontainer", "npm"],
   "rebaseWhen": "behind-base-branch",
   "separateMajorMinor": true,
   "separateMinorPatch": true,

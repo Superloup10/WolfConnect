@@ -40,21 +40,56 @@ entreprise.
 - PostgreSQL (local ou conteneurisé)
 - Fichier `.env` à la racine du projet
 
-### Variables requises dans `.env`
+### Variables d'environnement
 
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=wolfconnect-dev
-DB_NAME_TEST=wolfconnect-test
-DB_POSTGRES_PASSWORD=postgres
-DB_MASTER_USERNAME=master
-DB_MASTER_PASSWORD=master
-DB_APP_USERNAME=app
-DB_APP_PASSWORD=app
-JWT_SECRET=changeme
-APP_PORT=8080
-```
+➡️ **Toutes les variables requises sont listées et expliquées dans [`./.env.example`](./.env.example).**
+
+---
+
+#### 🗄️ **Base de données (PostgreSQL)**
+
+| Variable              | Rôle                             | Exemple              |
+|-----------------------|----------------------------------|----------------------|
+| DB_HOST               | Host Postgres (dans Docker)      | `postgres`           |
+| DB_PORT               | Port Postgres (dans Docker)      | `5432`               |
+| DB_NAME               | Nom de la base principale        | `wolfconnect-dev`    |
+| DB_NAME_TEST          | Nom de la base de test           | `wolfconnect-test`   |
+| DB_POSTGRES_PASSWORD  | Mot de passe superadmin Postgres | `postgres`           |
+| DB_MASTER_USERNAME    | Utilisateur DB "maître"          | `master`             |
+| DB_MASTER_PASSWORD    | Mot de passe utilisateur maître  | `master`             |
+| DB_APP_USERNAME       | Utilisateur applicatif           | `app`                |
+| DB_APP_PASSWORD       | Mot de passe utilisateur app     | `app`                |
+
+---
+
+#### 🌍 **Accès externe (hors Docker/CI/scripts locaux)**
+
+| Variable     | Rôle                                     | Exemple     |
+|--------------|------------------------------------------|-------------|
+| DB_HOST_EXT  | Host Postgres vu depuis le host/local/CI | `localhost` |
+| DB_PORT_EXT  | Port Postgres exposé localement/CI       | `5443`      |
+| APP_PORT_EXT | Port appli exposé localement/forwards    | `8081`      |
+
+---
+
+#### 🚦 **Serveur application**
+
+| Variable | Rôle                                       | Exemple |
+|----------|--------------------------------------------|---------|
+| APP_PORT | Port HTTP interne à l’application (Docker) | `8080`  |
+
+---
+
+#### 🔒 **Sécurité**
+
+| Variable    | Rôle             | Exemple     |
+|-------------|------------------|-------------|
+| JWT_SECRET  | Clé secrète JWT  | changeme    |
+
+---
+
+> **Pensez à adapter les valeurs \*\_EXT si vos ports sont déjà utilisés sur votre machine.**
+> **Ne commitez jamais de secrets “réels” dans ce fichier !**
 
 ---
 

@@ -18,12 +18,14 @@ if [ ! -f "$ENV_FILE" ]; then
     fi
 fi
 
-# Lecture des ports depuis .env, valeurs par défaut si absent
-APP_PORT=$(grep -E '^APP_PORT=' "$ENV_FILE" | cut -d '=' -f2- | xargs || echo "8080")
-DB_PORT=$(grep -E '^DB_PORT=' "$ENV_FILE" | cut -d '=' -f2- | xargs || echo "5432")
+# Récupération des port et host externe
+APP_PORT_EXT=$(grep -E '^APP_PORT_EXT=' "$ENV_FILE" | cut -d '=' -f2- | xargs || echo "8080")
+DB_PORT_EXT=$(grep -E '^DB_PORT_EXT=' "$ENV_FILE" | cut -d '=' -f2- | xargs || echo "5432")
 
 # Génération du devcontainer.json
-sed -e "s/\"{{APP_PORT}}\"/$APP_PORT/g" -e "s/\"{{DB_PORT}}\"/$DB_PORT/g" \
+sed \
+    -e "s/\"{{APP_PORT_EXT}}\"/$APP_PORT_EXT/g" \
+    -e "s/\"{{DB_PORT_EXT}}\"/$DB_PORT_EXT/g" \
     "$TEMPLATE_FILE" > "$OUTPUT_FILE"
 
-echo "✅ devcontainer.json généré avec APP_PORT=$APP_PORT et DB_PORT=$DB_PORT"
+echo "✅ devcontainer.json généré avec APP_PORT_EXT=$APP_PORT_EXT et DB_PORT_EXT=$DB_PORT_EXT"

@@ -8,7 +8,7 @@ services:
     env_file:
       - .env
     ports:
-      - "${APP_PORT:-8080}:8080"
+      - "${APP_PORT_EXT:-8080}:8080"
     volumes:
       - ../:/workspace/WolfConnect
     working_dir: /workspace/WolfConnect
@@ -31,7 +31,7 @@ services:
       DB_APP_USERNAME: ${DB_APP_USERNAME}
       DB_APP_PASSWORD: ${DB_APP_PASSWORD}
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_PORT_EXT:-5432}:5432"
     volumes:
       - postgresql:/var/lib/postgresql/data
       - ../init/common/create_users.sql:/docker-entrypoint-initdb.d/01_create_users.sql

@@ -1,0 +1,25 @@
+ktor:
+  application:
+    modules:
+      - fr.wolfdev.domain.ApplicationKt.module
+  deployment:
+    port: "${APP_PORT}"
+    host: 0.0.0.0
+
+jwt:
+  secret: "${JWT_SECRET}"
+  issuer: "https://api.wolfdev.fr"
+  audience: "https://wolfdev.fr"
+  realm: "WolfConnect"
+
+db:
+  host: "${DB_HOST}"
+  port: "${DB_PORT}"
+  database: "${DB_NAME_TEST}"
+  username: "${DB_APP_USERNAME}"
+  password: "${DB_APP_PASSWORD}"
+  pool:
+    maxPoolSize: 10
+    minimumIdle: 2
+    connectionTimeout: 5000
+    idleTimeout: 60000
