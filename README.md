@@ -8,6 +8,7 @@ entreprise.
 
 ![CI](https://github.com/superloup10/wolfconnect/actions/workflows/ci.yml/badge.svg)
 [![codecov](https://codecov.io/github/Superloup10/WolfConnect/graph/badge.svg?token=4Y3SCUV35N)](https://codecov.io/github/Superloup10/WolfConnect)
+[![SonarCloud Status](https://sonarcloud.io/api/project_badges/measure?project=Superloup10_WolfConnect&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Superloup10_WolfConnect)
 
 ---
 

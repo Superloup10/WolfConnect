@@ -6,6 +6,7 @@ detekt = "1.23.8"
 kover = "0.9.1"
 ktor = "3.2.1"
 logback = "1.5.18"
+sonarqube = "6.2.0.5505"
 # DB
 exposed = "1.0.0-beta-3"
 postgres-r2dbc = "1.0.7.RELEASE"
@@ -104,3 +105,4 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }

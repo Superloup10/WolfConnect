@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.ktor)
     alias(libs.plugins.flyway)
     alias(libs.plugins.kover)
+    alias(libs.plugins.sonarqube)
 }
 
 group = "fr.wolfdev"
@@ -124,4 +125,35 @@ flyway {
     mixed = true
     validateOnMigrate = true
     outOfOrder = false
+}
+
+kover {
+    reports {
+        total {
+            xml {
+                onCheck = true
+            }
+        }
+    }
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "Superloup10_WolfConnect")
+        property("sonar.organization", "superloup10")
+        property("sonar.host.url", "https://sonarcloud.io")
+
+        property("sonar.kotlin.detekt.reportPaths", "${layout.buildDirectory}/reports/detekt/detekt.xml")
+        property(
+            "sonar.kotlin.ktlint.reportPaths",
+            "${layout.buildDirectory}/reports/ktlint/ktlint-checkstyle-report.xml"
+        )
+        property("sonar.coverage.jacoco.xmlReportPaths", "${layout.buildDirectory}/reports/kover/xml/report.xml")
+
+        property("sonar.exclusions", "**/generated/**, **/${layout.buildDirectory}/**")
+    }
+}
+
+tasks.named("sonar") {
+    dependsOn("detekt", "ktlintCheck", "koverXmlReport")
 }
